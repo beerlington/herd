@@ -1,6 +1,6 @@
 # Herd
 
-TODO: Write a gem description
+Organize ActiveRecord collection functionality into separate classes
 
 ## Installation
 
@@ -18,7 +18,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class Movie < ActiveRecord::Base
+  has_and_belongs_to_many :directors
+  has_many :characters, :dependent => :destroy
+end
+
+class Movies < Herd::Base
+  model Movie
+
+  scope :failures, where("revenue < '10000000'")
+
+  def self.directed_by(director)
+    where('director = ?', director)
+  end
+end
+```
 
 ## Contributing
 
