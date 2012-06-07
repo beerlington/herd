@@ -75,6 +75,15 @@ Or install it yourself as:
 
     $ gem install herd
 
+You also need to preload all the Herd collections. The simplest way to
+do this is to add a Rails initializer with the following:
+
+config/initializers/herd.rb
+
+```ruby
+Herd.load_collections
+```
+
 ## Usage Example
 
 Using Herd is as easy as inheriting from `Herd::Base`. Declaring the
