@@ -4,7 +4,6 @@ describe Movies do
   let!(:movie1) { Movie.create!(:name => 'The Goonies', :revenue => 100_000_000) }
   let!(:movie2) { Movie.create!(:name => 'Gigli', :revenue => 0) }
 
-  let!(:director1) { Director.create!(:name => 'Richard Donner') }
 
   after do
     Movie.destroy_all
@@ -27,4 +26,25 @@ describe Movies do
     movie1.characters.fat.should == [chunk]
   end
 
+  it 'chain a bunch of stuff together and still work' do
+    chunk = Character.create!(name: 'chunk')
+    rdonner = Director.create!(:name => 'Richard Donner')
+    movie1.characters << chunk
+    movie1.directors << rdonner
+
+    Movies.directed_by('Richard Donner').first.characters.fat.should == [chunk]
+  end
+
+end
+
+describe Directors do
+  it 'should set the model name implicitly from the collection name' do
+    Directors.create!(:name => 'Richard Donner')
+
+    Directors.all.should have(1).director
+  end
+
+  it 'should raise an error if method cannot be found' do
+    -> { Directors.no_method }.should raise_error(NoMethodError)
+  end
 end

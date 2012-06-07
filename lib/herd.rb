@@ -1,10 +1,21 @@
 require "herd/version"
 
 module Herd
-  class Base # :nodoc:
+  class Base
     class_attribute :model_class
 
-    # DSL method for manually setting the model
+    # Specify the model class that the collection contains
+    # @param [Class] model the class that the collection contains
+    #
+    # @example
+    #  # ActiveRecord model
+    #  class Movie < ActiveRecord::Base
+    #  end
+    #
+    #  # Herd collection
+    #  class Movies < Herd::Base
+    #    model Movie
+    #  end
     def self.model(model)
       self.model_class = model
     end
@@ -18,6 +29,12 @@ module Herd
 
           method = self.method(method_name).to_proc
           model_class.define_singleton_method(method_name, method)
+        end
+
+        # Set the model class name
+        begin
+          self.model_class = name.singularize.constantize
+        rescue NameError
         end
       end
     end

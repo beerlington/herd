@@ -45,7 +45,7 @@ class Movies < Herd::Base
   scope :failures, where("revenue < '10000000'")
 
   def self.directed_by(director)
-    where('director = ?', director)
+    where(directors: {name: director}).joins(:directors)
   end
 end
 
@@ -56,9 +56,12 @@ end
 class Characters < Herd::Base
   model Character
 
-  scope :fat, where("name = 'chunk'")
+  scope :fat, where(name: 'chunk')
 end
 
 class Director < ActiveRecord::Base
   has_and_belongs_to_many :movies
+end
+
+class Directors < Herd::Base
 end
