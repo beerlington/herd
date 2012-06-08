@@ -2,12 +2,6 @@ require "herd/version"
 
 module Herd
 
-  # Load collection classes from a Rails initializer
-  # @param [String] path
-  def self.load_collections(path=Rails.root.join('app/collections'))
-    Dir.glob(File.join(path, '*.rb')).each {|f| require f }
-  end
-
   class Base
     class_attribute :model_class
 

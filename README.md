@@ -42,6 +42,8 @@ Using Herd, you can define a separate class to declare collection concerns:
 
 ```ruby
 class Movie < ActiveRecord::Base
+  herded_by Movies
+
   def release_year
     released_at.year
   end
@@ -52,6 +54,8 @@ class Movie < ActiveRecord::Base
 end
 
 class Movies < Herd::Base
+  model Movie # optional
+
   scope :recent, where('released_at > ?', 6.months.ago)
   scope :profitable, where('gross > budget')
 
@@ -75,15 +79,6 @@ Or install it yourself as:
 
     $ gem install herd
 
-You also need to preload all the Herd collections. The simplest way to
-do this is to add a Rails initializer with the following:
-
-config/initializers/herd.rb
-
-```ruby
-Herd.load_collections
-```
-
 ## Usage Example
 
 Using Herd is as easy as inheriting from `Herd::Base`. Declaring the
@@ -92,13 +87,14 @@ name.
 
 ```ruby
 class Movie < ActiveRecord::Base
+  herded_by Movies
+
   has_and_belongs_to_many :directors
   has_many :characters, :dependent => :destroy
 end
 
 class Movies < Herd::Base
-  # Optional
-  model Movie
+  model Movie # optional
 
   scope :failures, where("revenue < '10000000'")
 
@@ -106,6 +102,21 @@ class Movies < Herd::Base
     where(directors: {name: director}).joins(:directors)
   end
 end
+```
+
+Then you can use the collection methods as if they were defined in the
+model class:
+
+```ruby
+Movie.where('released_at < 2012-06-01').failures
+
+Director.first.movies.failures
+```
+
+You can also use the Herd classes directly:
+
+```ruby
+Movies.failures
 ```
 
 ## Contributing
