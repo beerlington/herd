@@ -15,10 +15,6 @@ module Herd
     # @param [Class] model the class that the collection contains
     #
     # @example
-    #  # ActiveRecord model
-    #  class Movie < ActiveRecord::Base
-    #  end
-    #
     #  # Herd collection
     #  class Movies < Herd::Base
     #    model Movie
@@ -56,4 +52,22 @@ module Herd
       end
     end
   end
+
+  module ActiveRecord
+    # Specify the Herd collection class that the model is a member of
+    # @param [Class] herd_collection the Herd class that the model is a member of
+    #
+    # @example
+    #  # ActiveRecord model
+    #  class Movie < ActiveRecord::Base
+    #    herded_by Movies
+    #  end
+    def herded_by(herd_collection)
+      raise ArgumentError, 'collection must inherit from Herd::Base' unless herd_collection.ancestors.include? Herd::Base
+
+      herd_collection
+    end
+  end
 end
+
+ActiveRecord::Base.extend Herd::ActiveRecord

@@ -4,7 +4,6 @@ describe Movies do
   let!(:movie1) { Movie.create!(:name => 'The Goonies', :revenue => 100_000_000) }
   let!(:movie2) { Movie.create!(:name => 'Gigli', :revenue => 0) }
 
-
   after do
     Movie.destroy_all
     Director.destroy_all
@@ -46,5 +45,11 @@ describe Directors do
 
   it 'should raise an error if method cannot be found' do
     -> { Directors.no_method }.should raise_error(NoMethodError)
+  end
+end
+
+describe 'associating model to collection' do
+  it 'should raise an error if the collection is not Herd::Base' do
+    -> { Director.herded_by Director}.should raise_error(ArgumentError)
   end
 end

@@ -34,34 +34,9 @@ ActiveRecord::Schema.define(:version => 1) do
   end
 end
 
-class Movie < ActiveRecord::Base
-  has_and_belongs_to_many :directors
-  has_many :characters, :dependent => :destroy
-end
-
-class Movies < Herd::Base
-  model Movie
-
-  scope :failures, where("revenue < '10000000'")
-
-  def self.directed_by(director)
-    where(directors: {name: director}).joins(:directors)
-  end
-end
-
-class Character < ActiveRecord::Base
-  belongs_to :movie
-end
-
-class Characters < Herd::Base
-  model Character
-
-  scope :fat, where(name: 'chunk')
-end
-
-class Director < ActiveRecord::Base
-  has_and_belongs_to_many :movies
-end
-
-class Directors < Herd::Base
-end
+autoload :Movie, 'support/movie'
+autoload :Movies, 'support/movies'
+autoload :Character, 'support/character'
+autoload :Characters, 'support/characters'
+autoload :Director, 'support/director'
+autoload :Directors, 'support/directors'
