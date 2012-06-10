@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.string :name
   end
 
-  create_table :directors_movies, :force => true do |t|
+  create_table :directors_movies, :id => false, :force => true do |t|
     t.integer :director_id
     t.integer :movie_id
   end
