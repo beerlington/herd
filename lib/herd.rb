@@ -3,8 +3,6 @@ require "herd/version"
 module Herd
 
   class Base
-    class_attribute :model_class
-
     # Specify the model class that the collection contains
     # @param [Class] model the class that the collection contains
     #
@@ -14,7 +12,7 @@ module Herd
     #    model Movie
     #  end
     def self.model(model)
-      self.model_class = model
+      @model_class = model
     end
 
     # Add all class methods to the model class so that these methods are
@@ -22,15 +20,15 @@ module Herd
     def self.inherited(klass)
       klass.class_eval do
         def self.singleton_method_added(method_name)
-          return if model_class.nil? || method_name == :model_class
+          return if @model_class.nil?
 
           method = self.method(method_name).to_proc
-          model_class.define_singleton_method(method_name, method)
+          @model_class.define_singleton_method(method_name, method)
         end
 
         # Set the model class name
         begin
-          self.model_class = name.singularize.constantize
+          @model_class = name.singularize.constantize
         rescue NameError
         end
       end
@@ -39,8 +37,8 @@ module Herd
     # Delegate all methods to the model class if you want to do something like:
     # Collection.find_by_name('blah')
     def self.method_missing(method, *args, &block)
-      if model_class.respond_to?(method)
-        model_class.send(method, *args, &block)
+      if @model_class.respond_to?(method)
+        @model_class.send(method, *args, &block)
       else
         super
       end
